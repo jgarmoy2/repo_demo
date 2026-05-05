@@ -1,0 +1,46 @@
+# ============================================================================
+# packages.yml — Dependencias de paquetes externos del proyecto
+# ============================================================================
+# Tras modificar este fichero, ejecutar:
+#   dbt deps
+#
+# Esto descargará los paquetes en /dbt_packages y los hará accesibles desde
+# nuestros modelos (refs, macros, tests).
+#
+# A partir de dbt 1.6 se puede usar `dependencies.yml` en lugar de este
+# archivo, pero packages.yml sigue funcionando perfectamente.
+# ============================================================================
+
+packages:
+  # --------------------------------------------------------------------------
+  # dbt_utils — El paquete imprescindible. Tests genéricos extra y macros
+  # muy útiles (date_spine, surrogate_key, group_by N, star, ...).
+  # https://hub.getdbt.com/dbt-labs/dbt_utils/latest/
+  # --------------------------------------------------------------------------
+  - package: dbt-labs/dbt_utils
+    version: 1.3.1
+
+  # --------------------------------------------------------------------------
+  # codegen — Generación automática de YAMLs de sources/models y SQL de
+  # staging. Reduce drásticamente el trabajo manual al añadir nuevas fuentes.
+  # https://hub.getdbt.com/dbt-labs/codegen/latest/
+  # --------------------------------------------------------------------------
+  - package: dbt-labs/codegen
+    version: 0.13.1
+
+  # --------------------------------------------------------------------------
+  # dbt_expectations — Tests genéricos avanzados inspirados en Great
+  # Expectations: rangos, distribuciones, regex, tipos de datos, ...
+  # https://hub.getdbt.com/calogica/dbt_expectations/latest/
+  # --------------------------------------------------------------------------
+  - package: calogica/dbt_expectations
+    version: 0.10.9
+
+  # --------------------------------------------------------------------------
+  # dbt_project_evaluator — Audita el proyecto contra las best practices
+  # oficiales de dbt Labs. Útil al final del curso para enseñar a los
+  # alumnos qué les detecta y cómo arreglarlo.
+  # https://hub.getdbt.com/dbt-labs/dbt_project_evaluator/latest/
+  # --------------------------------------------------------------------------
+  - package: dbt-labs/dbt_project_evaluator
+    version: 0.13.1
