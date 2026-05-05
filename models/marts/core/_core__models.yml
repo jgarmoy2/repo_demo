@@ -32,7 +32,7 @@ models:
 
     columns:
       - name: user_id
-        description: PK del usuario.
+        description: "PK del usuario."
         data_type: varchar
         constraints:
           - type: not_null
@@ -41,19 +41,19 @@ models:
           - not_null
 
       - name: first_name
-        description: Nombre.
+        description: "Nombre."
         data_type: varchar
 
       - name: last_name
-        description: Apellido.
+        description: "Apellido."
         data_type: varchar
 
       - name: full_name
-        description: Concatenación de nombre y apellido.
+        description: "Concatenación de nombre y apellido."
         data_type: varchar
 
       - name: email
-        description: Email del usuario.
+        description: "Email del usuario."
         data_type: varchar
         constraints:
           - type: not_null
@@ -67,49 +67,50 @@ models:
           - type: not_null
 
       - name: phone_number
-        description: Teléfono (puede ser nulo).
+        description: "Teléfono (puede ser nulo)."
         data_type: varchar
 
       - name: address_id
-        description: FK al address por defecto.
+        description: "FK al address por defecto."
         data_type: varchar
         data_tests:
           - relationships:
-              to: ref('dim_addresses')
-              field: address_id
+              arguments:
+                to: ref('dim_addresses')
+                field: address_id
 
       - name: address_line
-        description: Línea principal del address por defecto (denormalizado).
+        description: "Línea principal del address por defecto (denormalizado)."
         data_type: varchar
 
       - name: zipcode
-        description: Código postal.
+        description: "Código postal."
         data_type: varchar
 
       - name: state
-        description: Estado.
+        description: "Estado."
         data_type: varchar
 
       - name: country
-        description: País.
+        description: "País."
         data_type: varchar
 
       - name: registered_at_utc
-        description: Timestamp UTC del alta.
+        description: "Timestamp UTC del alta."
         data_type: timestamp_tz
         constraints:
           - type: not_null
 
       - name: last_updated_at_utc
-        description: Timestamp UTC de la última modificación.
+        description: "Timestamp UTC de la última modificación."
         data_type: timestamp_tz
 
       - name: days_since_registration
-        description: Días transcurridos desde el alta hasta hoy.
+        description: "Días transcurridos desde el alta hasta hoy."
         data_type: number
 
       - name: date_load
-        description: Timestamp de la última sincronización del source.
+        description: "Timestamp de la última sincronización del source."
         data_type: timestamp_tz
         constraints:
           - type: not_null
@@ -118,41 +119,42 @@ models:
   # dim_products
   # --------------------------------------------------------------------------
   - name: dim_products
-    description: Dimensión de productos del catálogo.
+    description: "Dimensión de productos del catálogo."
     columns:
       - name: product_id
-        description: PK del producto.
+        description: "PK del producto."
         data_tests:
           - unique
           - not_null
       - name: product_name
-        description: Nombre del producto.
+        description: "Nombre del producto."
         data_tests:
           - not_null
       - name: unit_price_usd
-        description: Precio unitario actual en USD.
+        description: "Precio unitario actual en USD."
         data_tests:
           - not_null
           - positive_values
       - name: inventory_units
-        description: Unidades en stock.
+        description: "Unidades en stock."
         data_tests:
           - not_null
       - name: stock_status
-        description: '{{ doc("stock_status") }}'
+        #description: '{{ doc("st_stock_status") }}'
         data_tests:
           - not_null
           - accepted_values:
-              values: ['out_of_stock', 'low_stock', 'in_stock']
+              arguments:
+                values: ['out_of_stock', 'low_stock', 'in_stock']
 
   # --------------------------------------------------------------------------
   # dim_addresses
   # --------------------------------------------------------------------------
   - name: dim_addresses
-    description: Dimensión de direcciones.
+    description: "Dimensión de direcciones."
     columns:
       - name: address_id
-        description: PK del address.
+        description: "PK del address."
         data_tests:
           - unique
           - not_null
@@ -167,29 +169,29 @@ models:
       semana, ...).
     columns:
       - name: date
-        description: Fecha (PK).
+        description: "Fecha (PK)."
         data_tests:
           - unique
           - not_null
       - name: date_id
-        description: ID numérico de la fecha (YYYYMMDD).
+        description: "ID numérico de la fecha (YYYYMMDD)."
         data_tests:
           - unique
           - not_null
       - name: year
-        description: Año.
+        description: "Año."
       - name: month
-        description: Mes (1-12).
+        description: "Mes (1-12)."
       - name: month_name
-        description: Nombre del mes.
+        description: "Nombre del mes."
       - name: quarter
-        description: Trimestre (1-4).
+        description: "Trimestre (1-4)."
       - name: week_of_year
-        description: Semana ISO del año.
+        description: "Semana ISO del año."
       - name: week_day
-        description: Nombre del día de la semana.
+        description: "Nombre del día de la semana."
       - name: is_weekend
-        description: TRUE si es sábado o domingo.
+        description: "TRUE si es sábado o domingo."
 
   # --------------------------------------------------------------------------
   # fct_orders
@@ -200,25 +202,27 @@ models:
       Métricas: ingreso bruto, descuentos, coste de envío, días hasta entrega.
     columns:
       - name: order_id
-        description: PK del pedido.
+        description: "PK del pedido."
         data_tests:
           - unique
           - not_null
       - name: user_id
-        description: FK a dim_users.
+        description: "FK a dim_users."
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_users')
-              field: user_id
+              arguments:
+                to: ref('dim_users')
+                field: user_id
       - name: address_id
-        description: FK a dim_addresses.
+        description: "FK a dim_addresses."
         data_tests:
           - relationships:
-              to: ref('dim_addresses')
-              field: address_id
+              arguments:
+                to: ref('dim_addresses')
+                field: address_id
       - name: status_order
-        description: '{{ doc("order_status") }}'
+        #description: '{{ doc("or_order_status") }}'
         data_tests:
           - not_null
       - name: total_order_cost_usd
@@ -248,21 +252,24 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('fct_orders')
-              field: order_id
+              arguments:
+                to: ref('fct_orders')
+                field: order_id
       - name: product_id
         description: FK a dim_products.
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_products')
-              field: product_id
+              arguments:  
+                to: ref('dim_products')
+                field: product_id
       - name: user_id
         description: FK a dim_users (denormalizado).
         data_tests:
           - relationships:
-              to: ref('dim_users')
-              field: user_id
+              arguments:
+                to: ref('dim_users')
+                field: user_id
       - name: quantity_units
         description: Unidades del producto en el pedido.
         data_tests:
@@ -295,18 +302,20 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_users')
-              field: user_id
+              arguments:
+                to: ref('dim_users')
+                field: user_id
       - name: product_id
         description: FK a dim_products (puede ser NULL).
       - name: order_id
         description: FK a fct_orders (puede ser NULL).
       - name: event_type
-        description: '{{ doc("event_type") }}'
+        #description: '{{ doc("ev_event_type") }}'
         data_tests:
           - not_null
           - accepted_values:
-              values: ['page_view', 'add_to_cart', 'checkout', 'package_shipped']
+              arguments:
+                values: ['page_view', 'add_to_cart', 'checkout', 'package_shipped']
 
 # ============================================================================
 # UNIT TESTS — Validan lógica con datos sintéticos

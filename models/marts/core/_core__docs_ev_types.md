@@ -11,37 +11,9 @@
    =========================================================================== #}
 
 
-{% docs order_status %}
-
-Estado del pedido. Valores posibles:
-
-| status     | definición                                            |
-|------------|-------------------------------------------------------|
-| preparing  | Pedido recibido y en preparación                      |
-| shipped    | Pedido enviado, no entregado todavía                  |
-| delivered  | Pedido entregado al cliente                           |
-
-{% enddocs %}
 
 
-{% docs stock_status %}
-
-Estado del stock del producto. Categorización derivada del campo
-`inventory_units`:
-
-| stock_status   | regla                       |
-|----------------|-----------------------------|
-| out_of_stock   | inventory_units = 0         |
-| low_stock      | 0 < inventory_units < 10    |
-| in_stock       | inventory_units >= 10       |
-
-Esta categorización se usa para alertas operativas y para mostrar avisos
-de stock al equipo de Operaciones.
-
-{% enddocs %}
-
-
-{% docs event_type %}
+{% docs ev_event_type %}
 
 Tipo de evento generado por el usuario en la plataforma. Valores posibles:
 

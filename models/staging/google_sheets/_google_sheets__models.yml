@@ -22,8 +22,9 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_sql_server_dbo__products')
-              field: product_id
+              arguments:
+                to: ref('stg_sql_server_dbo__products')
+                field: product_id
       - name: quantity_budgeted
         description: Cantidad presupuestada de unidades.
         data_tests:
