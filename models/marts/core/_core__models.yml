@@ -85,7 +85,7 @@ models:
 
       - name: zipcode
         description: "Código postal."
-        data_type: varchar
+        data_type: varchar(20)
 
       - name: state
         description: "Estado."
