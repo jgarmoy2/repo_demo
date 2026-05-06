@@ -20,16 +20,17 @@ sources:
       e-commerce (SQL Server). Replicados a Snowflake mediante Fivetran.
 
     schema: sql_server_dbo
-    database: "{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_BRONZE_DB"
+    database: "SERGIOEGUI_{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_BRONZE_DB"
 
     quoting:
       database: false
       schema: false
       identifier: false
 
-    freshness:
-      warn_after:  {count: 24, period: hour}
-      error_after: {count: 48, period: hour}
+    config:
+      freshness:
+        warn_after:  {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
 
     tables:
 
@@ -38,7 +39,8 @@ sources:
       # ----------------------------------------------------------------------
       - name: users
         description: Información de los usuarios registrados en el e-commerce.
-        loaded_at_field: _fivetran_synced
+        config: 
+          loaded_at_field: _fivetran_synced
         columns:
           - name: user_id
             description: UUID único del usuario.
@@ -65,8 +67,9 @@ sources:
             description: FK al address por defecto del usuario.
             data_tests:
               - relationships:
-                  to: source('sql_server_dbo', 'addresses')
-                  field: address_id
+                  arguments:
+                    to: source('sql_server_dbo', 'addresses')
+                    field: address_id
           - name: _fivetran_deleted
             description: Indicador de soft-delete por Fivetran.
           - name: _fivetran_synced
@@ -79,7 +82,8 @@ sources:
       # ----------------------------------------------------------------------
       - name: orders
         description: Pedidos realizados por los usuarios del e-commerce.
-        loaded_at_field: _fivetran_synced
+        config:  
+          loaded_at_field: _fivetran_synced
         columns:
           - name: order_id
             description: UUID único del pedido.
@@ -91,14 +95,16 @@ sources:
             data_tests:
               - not_null
               - relationships:
-                  to: source('sql_server_dbo', 'users')
-                  field: user_id
+                  arguments:
+                    to: source('sql_server_dbo', 'users')
+                    field: user_id
           - name: address_id
             description: FK al address de envío del pedido.
             data_tests:
               - relationships:
-                  to: source('sql_server_dbo', 'addresses')
-                  field: address_id
+                  arguments:
+                    to: source('sql_server_dbo', 'addresses')
+                    field: address_id
           - name: promo_id
             description: FK al código promocional usado (si existe).
           - name: created_at
@@ -126,11 +132,12 @@ sources:
             data_tests:
               - not_null
           - name: status
-            description: '{{ doc("order_status") }}'
+            #description: '{{ doc("or_order_status") }}'
             data_tests:
               - not_null
               - accepted_values:
-                  values: ['preparing', 'shipped', 'delivered']
+                  arguments:
+                    values: ['preparing', 'shipped', 'delivered']
           - name: _fivetran_deleted
           - name: _fivetran_synced
             data_tests:
@@ -143,22 +150,25 @@ sources:
         description: >
           Detalle de productos en cada pedido. Granularidad: una fila por
           (order_id, product_id).
-        loaded_at_field: _fivetran_synced
+        config:
+          loaded_at_field: _fivetran_synced
         columns:
           - name: order_id
             description: FK al pedido.
             data_tests:
               - not_null
               - relationships:
-                  to: source('sql_server_dbo', 'orders')
-                  field: order_id
+                  arguments:
+                    to: source('sql_server_dbo', 'orders')
+                    field: order_id
           - name: product_id
             description: FK al producto.
             data_tests:
               - not_null
               - relationships:
-                  to: source('sql_server_dbo', 'products')
-                  field: product_id
+                  arguments:
+                    to: source('sql_server_dbo', 'products')
+                    field: product_id
           - name: quantity
             description: Unidades del producto en el pedido.
             data_tests:
@@ -174,7 +184,8 @@ sources:
       # ----------------------------------------------------------------------
       - name: products
         description: Catálogo maestro de productos del e-commerce.
-        loaded_at_field: _fivetran_synced
+        config:
+          loaded_at_field: _fivetran_synced
         columns:
           - name: product_id
             description: UUID único del producto.
@@ -204,7 +215,8 @@ sources:
       # ----------------------------------------------------------------------
       - name: addresses
         description: Direcciones de envío de los usuarios del e-commerce.
-        loaded_at_field: _fivetran_synced
+        config: 
+          loaded_at_field: _fivetran_synced
         columns:
           - name: address_id
             description: UUID único de la dirección.
@@ -229,7 +241,8 @@ sources:
       # ----------------------------------------------------------------------
       - name: promos
         description: Códigos promocionales aplicables a pedidos.
-        loaded_at_field: _fivetran_synced
+        config:
+          loaded_at_field: _fivetran_synced
         columns:
           - name: promo_id
             description: Identificador único de la promoción.
@@ -245,7 +258,8 @@ sources:
             data_tests:
               - not_null
               - accepted_values:
-                  values: ['active', 'inactive']
+                  arguments:
+                    values: ['active', 'inactive']
           - name: _fivetran_deleted
           - name: _fivetran_synced
             data_tests:
@@ -260,10 +274,10 @@ sources:
         description: >
           Eventos de navegación e interacción de los usuarios en la plataforma
           (page views, add to cart, checkout, package shipped).
-        loaded_at_field: _fivetran_synced
+        config:
+          loaded_at_field: _fivetran_synced
         # Configuración para usar microbatch en modelos incrementales que
         # consuman este source. Marca el campo temporal canónico del evento.
-        config:
           event_time: created_at
 
         columns:
@@ -281,8 +295,9 @@ sources:
             data_tests:
               - not_null
               - relationships:
-                  to: source('sql_server_dbo', 'users')
-                  field: user_id
+                  arguments:
+                    to: source('sql_server_dbo', 'users')
+                    field: user_id
           - name: page_url
             description: URL en la que ocurrió el evento.
             data_tests:
@@ -296,7 +311,8 @@ sources:
             data_tests:
               - not_null
               - accepted_values:
-                  values: ['page_view', 'add_to_cart', 'checkout', 'package_shipped']
+                  arguments:
+                    values: ['page_view', 'add_to_cart', 'checkout', 'package_shipped']
           - name: order_id
             description: FK al pedido (sólo en eventos de checkout/shipped).
           - name: product_id

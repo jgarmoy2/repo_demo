@@ -57,6 +57,7 @@ models:
     # Test compuesto: la combinación user_id + session_id debe ser única
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - user_id
-            - session_id
+          arguments: 
+            combination_of_columns:
+              - user_id
+              - session_id

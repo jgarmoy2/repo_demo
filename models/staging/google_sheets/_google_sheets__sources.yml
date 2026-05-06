@@ -26,7 +26,7 @@ sources:
     # `env_var` permite que el source apunte a la BD correcta según el entorno
     # (DEV, PRO, ...). El segundo argumento ('FAIL') es el valor por defecto
     # si la variable no existe — así detectamos errores de configuración rápido.
-    database: "{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_BRONZE_DB"
+    database: "SERGIOEGUI_{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_BRONZE_DB"
 
     # Snowflake no necesita quoting; lo desactivamos explícitamente para
     # evitar problemas con identificadores que mezclan mayúsculas/minúsculas.
@@ -42,9 +42,11 @@ sources:
     #   warn_after: si el dato más reciente tiene MÁS de 24h => warning
     #   error_after: si el dato más reciente tiene MÁS de 48h => error
     # ------------------------------------------------------------------------
-    freshness:
-      warn_after:  {count: 24, period: hour}
-      error_after: {count: 48, period: hour}
+    
+    config:
+      freshness:
+        warn_after:  {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
 
     tables:
 
@@ -56,7 +58,8 @@ sources:
           Presupuesto mensual previsto por producto, mantenido por el equipo
           de Finanzas en una hoja de Google Sheets.
         # Campo que dbt usará para calcular freshness sobre esta tabla.
-        loaded_at_field: _fivetran_synced
+        config: 
+          loaded_at_field: _fivetran_synced
 
         columns:
           - name: _row
@@ -71,8 +74,9 @@ sources:
               - not_null
               # Ejemplo de test relacional cross-source
               - relationships:
-                  to: source('sql_server_dbo', 'products')
-                  field: product_id
+                  arguments:
+                    to: source('sql_server_dbo', 'products')
+                    field: product_id
 
           - name: quantity
             description: Cantidad presupuestada para ese producto y mes.

@@ -22,8 +22,8 @@
           target_schema='snapshots',
           unique_key='user_id',
           strategy='timestamp',
-          updated_at='updated_at',          -- Campo del source con la última modif.
-          hard_deletes='new_record'         -- Auditamos también los borrados
+          updated_at='updated_at',          
+          hard_deletes='new_record'         
         )
     }}
 

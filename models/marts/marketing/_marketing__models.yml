@@ -19,8 +19,9 @@ models:
           - unique
           - not_null
           - relationships:
-              to: ref('dim_users')
-              field: user_id
+              arguments: 
+                to: ref('dim_users')
+                field: user_id
 
       - name: email
         description: Email del usuario.
@@ -64,4 +65,5 @@ models:
         data_tests:
           - not_null
           - accepted_values:
-              values: ['never_bought', 'one_purchase', 'two_purchases', 'three_or_more']
+              arguments: 
+                values: ['never_bought', 'one_purchase', 'two_purchases', 'three_or_more']

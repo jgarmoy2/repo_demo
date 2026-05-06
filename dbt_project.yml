@@ -14,7 +14,7 @@
 # modelo concreto usando el bloque `{{ config(...) }}`.
 # ============================================================================
 
-name: 'curso_data_engineering'
+name: 'repo_demo'
 version: '1.0.0'
 config-version: 2
 
@@ -46,8 +46,9 @@ clean-targets:                  # Directorios que `dbt clean` elimina
 # Lo usamos para asegurar que el warehouse de Snowflake está activo antes
 # de lanzar las transformaciones (si está suspendido y la primera query
 # tarda mucho, se evitan timeouts).
-on-run-start:
-  - "ALTER WAREHOUSE WH_CURSO_DATA_ENGINEERING RESUME IF SUSPENDED;"
+
+#on-run-start:
+#  - "ALTER WAREHOUSE WH_CURSO_DATA_ENGINEERING RESUME IF SUSPENDED;"
 
 # ----------------------------------------------------------------------------
 # Variables de proyecto
@@ -72,7 +73,7 @@ models:
   # más arriesgadas para modelos productivos.
   +transient: false
 
-  curso_data_engineering:
+  repo_demo:
 
     # ------------------------------------------------------------------------
     # STAGING — Capa Silver
@@ -82,7 +83,7 @@ models:
     # ------------------------------------------------------------------------
     staging:
       +materialized: view
-      +database: "{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_SILVER_DB"
+      +database: "SERGIOEGUI_{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_SILVER_DB"
 
       google_sheets:
         +schema: google_sheets        # Schema dentro de SILVER_DB
@@ -98,7 +99,7 @@ models:
     # ------------------------------------------------------------------------
     marts:
       +materialized: table
-      +database: "{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_GOLD_DB"
+      +database: "SERGIOEGUI_{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_GOLD_DB"
 
       core:
         +schema: core
@@ -123,9 +124,9 @@ models:
 # CSV: códigos de país, listas de referencia, ...).
 seeds:
   +schema: seed_data
-  +database: "{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_BRONZE_DB"
+  +database: "SERGIOEGUI_{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_BRONZE_DB"
 
-  curso_data_engineering:
+  repo_demo:
     country_codes:
       # Tipos de columna explícitos para evitar inferencias erróneas
       +column_types:
@@ -141,7 +142,7 @@ seeds:
 # pierde su razón de ser).
 snapshots:
   +transient: false
-  +target_database: "{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_SILVER_DB"
+  +target_database: "SERGIOEGUI_{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_SILVER_DB"
   +target_schema: snapshots
 
 # ============================================================================

@@ -41,10 +41,11 @@ seeds:
         data_tests:
           - not_null
           - accepted_values:
-              values:
-                - Europe
-                - North America
-                - South America
-                - Asia
-                - Oceania
-                - Africa
+              arguments: 
+                values:
+                  - Europe
+                  - North America
+                  - South America
+                  - Asia
+                  - Oceania
+                  - Africa
